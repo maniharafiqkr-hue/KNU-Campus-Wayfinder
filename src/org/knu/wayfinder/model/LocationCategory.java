@@ -1,9 +1,9 @@
 package org.knu.wayfinder.model;
 
 /**
- * 지도 노드의 종류를 정의하는 열거형입니다.
+ * 장소의 종류를 정의하는 열거형입니다.
  */
-public enum NodeCategory {
+public enum LocationCategory {
     CLASSROOM,  // 강의실
     OFFICE,     // 교수실/사무실
     RESTROOM,   // 화장실
