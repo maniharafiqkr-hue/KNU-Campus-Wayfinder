@@ -4,6 +4,7 @@ package org.knu.wayfinder.model;
  * 장소의 종류를 정의하는 열거형입니다.
  */
 public enum LocationCategory {
+	BUILDING,   //건물(야외 내비게이션용)
     CLASSROOM,  // 강의실
     OFFICE,     // 교수실/사무실
     RESTROOM,   // 화장실
