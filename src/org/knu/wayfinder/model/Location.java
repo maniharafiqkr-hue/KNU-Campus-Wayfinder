@@ -79,7 +79,6 @@ public class Location {
 
     @Override
     public String toString() {
-        return String.format("Location{name='%s'}", 
-                             name);
+        return String.format("%s", name);
     }
 }
