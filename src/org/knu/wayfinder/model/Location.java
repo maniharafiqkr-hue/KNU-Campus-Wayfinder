@@ -35,10 +35,51 @@ public class Location {
     public void addNeighbor(Edge edge) {
         this.neighbors.add(edge);
     }
+    
+    
+    // ================= Getters =================
+
+    public int getId() {
+        return id;
+    }
+
+    public LocationCategory getCategory() {
+        return category;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public int getFloor() {
+        return floor;
+    }
+
+    public String getBuilding() {
+        return building;
+    }
+
+    public int getX() {
+        return x;
+    }
+
+    public int getY() {
+        return y;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public List<Edge> getNeighbors() {
+        return neighbors;
+    }
+
+    // ===========================================
 
     @Override
     public String toString() {
-        return String.format("Location{id=%d, name='%s', pos=(%d, %d), category=%s}", 
-                             id, name, x, y, category);
+        return String.format("Location{name='%s'}", 
+                             name);
     }
 }

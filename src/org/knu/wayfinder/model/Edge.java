@@ -19,6 +19,21 @@ public class Edge {
         this.weight = weight;
     }
     
+   // ================= Getters =================
+
+    public int getFromId() {
+        return fromId;
+    }
+
+    public int getToId() {
+        return toId;
+    }
+
+    public double getWeight() {
+        return weight;
+    }
+
+    // ===========================================
     @Override
     public String toString() {
         return String.format("Edge{%d -> %d, weight=%.2f}", fromId, toId, weight);
