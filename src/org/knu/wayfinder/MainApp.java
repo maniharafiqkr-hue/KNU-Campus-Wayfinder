@@ -49,6 +49,6 @@ public class MainApp {
             frame.setVisible(true);
             
                 
-            });
+        });
     }
 }
