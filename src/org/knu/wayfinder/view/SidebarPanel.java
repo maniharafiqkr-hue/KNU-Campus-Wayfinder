@@ -10,6 +10,7 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import org.knu.wayfinder.model.Graph;
 import org.knu.wayfinder.model.Location;
+import org.knu.wayfinder.model.LocationCategory;
 
 public class SidebarPanel extends JPanel {
     private Graph graph;
@@ -168,6 +169,9 @@ public class SidebarPanel extends JPanel {
         String keyword = searchField.getText().toLowerCase().trim();
         searchListModel.clear();
         for (Location loc : graph.getNodes().values()) {
+            if (LocationCategory.OUTDOOR == loc.getCategory()) continue; // Hide waypoints
+            if (LocationCategory.STAIRS == loc.getCategory()) continue; 
+            if (LocationCategory.ENTRANCE == loc.getCategory()) continue; 
             if (loc.getName().toLowerCase().contains(keyword) || 
                 (loc.getBuilding() != null && loc.getBuilding().toLowerCase().contains(keyword))) {
                 searchListModel.addElement(loc);
