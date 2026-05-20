@@ -6,8 +6,10 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.NoninvertibleTransformException;
 import java.awt.geom.Path2D;
 import java.awt.geom.Point2D;
+import java.util.HashSet;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 import javax.swing.*;
 import org.knu.wayfinder.model.Edge;
 import org.knu.wayfinder.model.Graph;
@@ -29,7 +31,8 @@ public class MapPanel extends JPanel {
     private int yDiff;
     private Point startPoint;
 
-    private List<Edge> currentPath = Collections.emptyList();
+    // A* 결과는 Location 순서 목록이므로, 경로 렌더링도 노드 체인 기준으로 그린다.
+    private List<Location> currentPath = Collections.emptyList();
     private Location hoveredLocation = null;
 
     public MapPanel(Graph graph, MainFrame mainFrame) {
@@ -43,7 +46,7 @@ public class MapPanel extends JPanel {
         addMouseWheelListener(adapter);
     }
 
-    public void setPath(List<Edge> path) {
+    public void setPath(List<Location> path) {
         this.currentPath = path != null ? path : Collections.emptyList();
         repaint();
     }
@@ -94,9 +97,18 @@ public class MapPanel extends JPanel {
         g2.setColor(new Color(200, 200, 200));
         g2.setStroke(new BasicStroke(2.0f / (float)zoomFactor));
 
+        // 역방향 간선을 자동 보강했으므로, 배경선은 한 번만 그린다.
+        Set<String> drawnEdges = new HashSet<>();
+
         for (List<Edge> edges : graph.getAdjacencyList().values()) {
             for (Edge edge : edges) {
-                drawEdge(g2, edge, false);
+                String edgeKey = edge.getFromId() < edge.getToId()
+                        ? edge.getFromId() + "-" + edge.getToId()
+                        : edge.getToId() + "-" + edge.getFromId();
+
+                if (drawnEdges.add(edgeKey)) {
+                    drawEdge(g2, edge, false);
+                }
             }
         }
 
@@ -104,9 +116,7 @@ public class MapPanel extends JPanel {
         if (!currentPath.isEmpty()) {
             g2.setColor(new Color(255, 50, 50, 180));
             g2.setStroke(new BasicStroke(5.0f / (float)zoomFactor, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
-            for (Edge edge : currentPath) {
-                drawEdge(g2, edge, true);
-            }
+            drawPath(g2, currentPath);
         }
 
         // Draw nodes
@@ -143,6 +153,23 @@ public class MapPanel extends JPanel {
         
         path.lineTo(toLoc.getX(), toLoc.getY());
         g2.draw(path);
+    }
+
+    private void drawPath(Graphics2D g2, List<Location> path) {
+        if (path.size() < 2) {
+            return;
+        }
+
+        Path2D.Double route = new Path2D.Double();
+        Location first = path.get(0);
+        route.moveTo(first.getX(), first.getY());
+
+        for (int i = 1; i < path.size(); i++) {
+            Location location = path.get(i);
+            route.lineTo(location.getX(), location.getY());
+        }
+
+        g2.draw(route);
     }
 
     private class MapMouseAdapter extends MouseAdapter {

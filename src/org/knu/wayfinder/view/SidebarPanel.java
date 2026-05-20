@@ -4,6 +4,8 @@ package org.knu.wayfinder.view;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.Collections;
+import java.util.List;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.DocumentEvent;
@@ -11,6 +13,8 @@ import javax.swing.event.DocumentListener;
 import org.knu.wayfinder.model.Graph;
 import org.knu.wayfinder.model.Location;
 import org.knu.wayfinder.model.LocationCategory;
+import org.knu.wayfinder.service.AStarService;
+import org.knu.wayfinder.service.EmptyPathException;
 
 public class SidebarPanel extends JPanel {
     private Graph graph;
@@ -201,12 +205,20 @@ public class SidebarPanel extends JPanel {
                 JOptionPane.showMessageDialog(this, "출발지와 도착지가 같습니다.");
                 return;
             }
-            // List<Edge> path = graph.findShortestPath(start.getId(), end.getId());
-            if (true) {             // 나중에 채우기
-                JOptionPane.showMessageDialog(this, "경로를 찾을 수 없습니다.");
-            } else {
-                // mainFrame.getMapPanel().setPath(path);
-                System.out.println("길찾기");
+            try {
+                AStarService aStarService = new AStarService();
+                List<Location> path = aStarService.findShortestPath(graph, start.getId(), end.getId());
+
+                // 경로가 계산되면 지도 패널에 바로 전달해 렌더링한다.
+                mainFrame.getMapPanel().setPath(path);
+
+                // 경로가 화면 밖에 있더라도 보이도록 출발지 기준으로 살짝 이동시킨다.
+                mainFrame.getMapPanel().panTo(start.getX(), start.getY());
+
+                JOptionPane.showMessageDialog(this, "경로를 찾았습니다. 노드 수: " + path.size());
+            } catch (EmptyPathException ex) {
+                mainFrame.getMapPanel().setPath(Collections.emptyList());
+                JOptionPane.showMessageDialog(this, ex.getMessage());
             }
         }
     }
