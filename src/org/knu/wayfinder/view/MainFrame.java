@@ -12,6 +12,7 @@ public class MainFrame extends JFrame {
     private SidebarPanel sidebarPanel;
     private DetailSidebarPanel detailSidebarPanel;
     private MapPanel mapPanel;
+    private JScrollPane detailScrollPane;
 
     
 
@@ -26,13 +27,23 @@ public class MainFrame extends JFrame {
 
         sidebarPanel = new SidebarPanel(graph, this);
         mapPanel = new MapPanel(graph, this);
-        detailSidebarPanel = new DetailSidebarPanel(graph, null);
+        detailSidebarPanel = new DetailSidebarPanel(graph, this);
 
-        detailSidebarPanel.setVisible(false);
+        // scroll로 감싸기
+        detailScrollPane = new JScrollPane(detailSidebarPanel);
+        detailScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        detailScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        // detailScrollPane.setBorder(null); 
+
+        detailScrollPane.setVisible(false);
+        detailScrollPane.setPreferredSize(new Dimension(420, 0));
+
+        // 마우스 휠 속도
+        detailScrollPane.getVerticalScrollBar().setUnitIncrement(16);
 
         add(sidebarPanel, BorderLayout.WEST);
         add(mapPanel, BorderLayout.CENTER);
-        add(detailSidebarPanel, BorderLayout.EAST);
+        add(detailScrollPane, BorderLayout.EAST);
 
         this.addComponentListener(new ComponentAdapter() {
             @Override
@@ -43,7 +54,7 @@ public class MainFrame extends JFrame {
                 // 창 너비가 기준보다 크거나, 전체화면 상태일 때 표시
                 boolean shouldShow = getWidth() >= threshold || getExtendedState() == JFrame.MAXIMIZED_BOTH;
                 
-                detailSidebarPanel.setVisible(shouldShow);
+                detailScrollPane.setVisible(shouldShow);
                 
                 revalidate();
                 repaint();
@@ -65,6 +76,7 @@ public class MainFrame extends JFrame {
 
     public void onLocationSelectedFromMap(Location loc) {
         sidebarPanel.displayLocationInfo(loc);
+        detailSidebarPanel.updateLocationDetail(loc);
     }
 
     
