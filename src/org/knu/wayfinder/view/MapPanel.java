@@ -6,8 +6,8 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.NoninvertibleTransformException;
 import java.awt.geom.Path2D;
 import java.awt.geom.Point2D;
-import java.util.HashSet;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import javax.swing.*;
@@ -123,8 +123,9 @@ public class MapPanel extends JPanel {
         double nodeRadius = 8.0 / zoomFactor;
         for (Location loc : graph.getNodes().values()) {
             if (LocationCategory.OUTDOOR == loc.getCategory()) continue; // Hide waypoints
-            if (LocationCategory.STAIRS == loc.getCategory()) continue; 
-            if (LocationCategory.ENTRANCE == loc.getCategory()) continue; 
+            else if (LocationCategory.HALLWAY == loc.getCategory()) continue;
+            else if (LocationCategory.STAIRS == loc.getCategory()) continue; 
+            else if (LocationCategory.ENTRANCE == loc.getCategory()) continue; 
 
             if (loc.equals(hoveredLocation)) {
                 g2.setColor(Color.ORANGE);
@@ -228,8 +229,9 @@ public class MapPanel extends JPanel {
                 double minDist = Double.MAX_VALUE;
                 for (Location loc : graph.getNodes().values()) {
                     if (LocationCategory.OUTDOOR == loc.getCategory()) continue; // Hide waypoints
-                    if (LocationCategory.STAIRS == loc.getCategory()) continue; 
-                    if (LocationCategory.ENTRANCE == loc.getCategory()) continue; 
+                    else if (LocationCategory.HALLWAY == loc.getCategory()) continue;
+                    else if (LocationCategory.STAIRS == loc.getCategory()) continue; 
+                    else if (LocationCategory.ENTRANCE == loc.getCategory()) continue; 
                     
                     double dx = loc.getX() - ptMap.x;
                     double dy = loc.getY() - ptMap.y;
@@ -266,8 +268,9 @@ public class MapPanel extends JPanel {
                 double minDist = Double.MAX_VALUE;
                 for (Location loc : graph.getNodes().values()) {
                     if (LocationCategory.OUTDOOR == loc.getCategory()) continue; // Hide waypoints
-                    if (LocationCategory.STAIRS == loc.getCategory()) continue; 
-                    if (LocationCategory.ENTRANCE == loc.getCategory()) continue; 
+                    else if (LocationCategory.HALLWAY == loc.getCategory()) continue;
+                    else if (LocationCategory.STAIRS == loc.getCategory()) continue; 
+                    else if (LocationCategory.ENTRANCE == loc.getCategory()) continue; 
                     double dx = loc.getX() - ptMap.x;
                     double dy = loc.getY() - ptMap.y;
                     double dist = Math.sqrt(dx*dx + dy*dy);

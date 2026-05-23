@@ -151,8 +151,9 @@ public class SidebarPanel extends JPanel {
 
         for (Location loc : graph.getNodes().values()) {
             if (LocationCategory.OUTDOOR == loc.getCategory()) continue; // Hide waypoints
-            if (LocationCategory.STAIRS == loc.getCategory()) continue; 
-            if (LocationCategory.ENTRANCE == loc.getCategory()) continue; 
+            else if (LocationCategory.HALLWAY == loc.getCategory()) continue;
+            else if (LocationCategory.STAIRS == loc.getCategory()) continue; 
+            else if (LocationCategory.ENTRANCE == loc.getCategory()) continue; 
             startCombo.addItem(loc);
             endCombo.addItem(loc);
         }
@@ -177,8 +178,9 @@ public class SidebarPanel extends JPanel {
         searchListModel.clear();
         for (Location loc : graph.getNodes().values()) {
             if (LocationCategory.OUTDOOR == loc.getCategory()) continue; // Hide waypoints
-            if (LocationCategory.STAIRS == loc.getCategory()) continue; 
-            if (LocationCategory.ENTRANCE == loc.getCategory()) continue; 
+            else if (LocationCategory.HALLWAY == loc.getCategory()) continue;
+            else if (LocationCategory.STAIRS == loc.getCategory()) continue; 
+            else if (LocationCategory.ENTRANCE == loc.getCategory()) continue; 
             if (loc.getName().toLowerCase().contains(keyword) || 
                 (loc.getBuilding() != null && loc.getBuilding().toLowerCase().contains(keyword))) {
                 searchListModel.addElement(loc);
