@@ -16,6 +16,8 @@ public class Location {
     private int x; // 픽셀 좌표 X
     private int y; // 픽셀 좌표 Y
     private String description;
+    private Location parentBuilding;
+    private List<Location> children = new ArrayList<>();
     
     // 이 노드와 연결된 간선(Edge) 리스트 (알고리즘용)
     private List<Edge> neighbors;
@@ -34,6 +36,22 @@ public class Location {
     }
     public void addNeighbor(Edge edge) {
         this.neighbors.add(edge);
+    }
+
+    public void setParentBuilding(Location parent) {
+        this.parentBuilding = parent;
+    }
+
+    public Location getParentBuilding() {
+        return parentBuilding;
+    }
+
+    public void addChild(Location child) {
+        this.children.add(child);
+    }
+
+    public List<Location> getChildren() {
+        return children;
     }
     
     

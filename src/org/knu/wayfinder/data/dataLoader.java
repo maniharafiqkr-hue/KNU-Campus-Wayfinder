@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Map;
 import org.knu.wayfinder.model.*;
 
-public class dataLoader {
+public class DataLoader {
 
     public static Map<Integer, Location> loadLocations(String filePath) {
         Map<Integer, Location> locations = new HashMap<>();
