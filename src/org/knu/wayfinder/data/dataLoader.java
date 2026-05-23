@@ -50,15 +50,16 @@ public class DataLoader {
             while ((line = br.readLine()) != null) {
                 // FromID, ToID, Weight
                 String[] parts = line.split(",", -1);
-                
-                try {
-                    int fromId = Integer.parseInt(parts[0].trim());
-                    int toId = Integer.parseInt(parts[1].trim());
-                    double weight = Double.parseDouble(parts[2].trim());
-         
-                    edges.add(new Edge(fromId, toId, weight));
-                } catch (NumberFormatException e) {
-                    System.err.println("Error parsing edge number formatting: " + line);
+                if (parts.length >= 3) {
+                    try {
+                        int fromId = Integer.parseInt(parts[0].trim());
+                        int toId = Integer.parseInt(parts[1].trim());
+                        double weight = Double.parseDouble(parts[2].trim());
+            
+                        edges.add(new Edge(fromId, toId, weight));
+                    } catch (NumberFormatException e) {
+                        System.err.println("Error parsing edge number formatting: " + line);
+                    }
                 }
                 
             }

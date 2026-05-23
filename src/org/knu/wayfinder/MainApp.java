@@ -28,9 +28,8 @@ public class MainApp {
             locations = DataLoader.loadLocations("src/org/knu/wayfinder/data/locations.csv");
             edges = DataLoader.loadEdges("src/org/knu/wayfinder/data/edges.csv");
             
-            System.out.println(locations);
-            System.out.println(edges);
-            
+            // System.out.println(locations);
+            // System.out.println(edges);
 
             System.out.println("Loading data...");
 

@@ -150,6 +150,9 @@ public class SidebarPanel extends JPanel {
         endCombo.setAlignmentX(Component.LEFT_ALIGNMENT);
 
         for (Location loc : graph.getNodes().values()) {
+            if (LocationCategory.OUTDOOR == loc.getCategory()) continue; // Hide waypoints
+            if (LocationCategory.STAIRS == loc.getCategory()) continue; 
+            if (LocationCategory.ENTRANCE == loc.getCategory()) continue; 
             startCombo.addItem(loc);
             endCombo.addItem(loc);
         }
