@@ -16,6 +16,10 @@ public class Location {
     private int x; // 픽셀 좌표 X
     private int y; // 픽셀 좌표 Y
     private String description;
+    private Location parentBuilding;
+    private List<Location> children;
+    private int ChildMaxFloor;
+    
     
     // 이 노드와 연결된 간선(Edge) 리스트 (알고리즘용)
     private List<Edge> neighbors;
@@ -31,6 +35,7 @@ public class Location {
         this.y = y;
         this.description = description;
         this.neighbors = new ArrayList<>();
+        this.children = new ArrayList<>();
     }
     public void addNeighbor(Edge edge) {
         this.neighbors.add(edge);
@@ -75,10 +80,39 @@ public class Location {
         return neighbors;
     }
 
+    public void setParentBuilding(Location parent) {
+        this.parentBuilding = parent;
+    }
+
+    public Location getParentBuilding() {
+        return parentBuilding;
+    }
+
+    public void addChild(Location child) {
+        this.children.add(child);
+    }
+
+    public List<Location> getChildren() {
+        return children;
+    }
+
+    public void setChildMaxFloor(int floor) {
+        this.ChildMaxFloor = floor;
+    }
+
+    public int getChildMaxFloor() {
+        return ChildMaxFloor;
+    }
+
     // ===========================================
 
     @Override
     public String toString() {
+        if(floor != 0 && parentBuilding != null){
+            return parentBuilding.getName() + " " + floor + "층 " + name;
+        }
+
         return String.format("%s", name);
     }
+    
 }

@@ -154,6 +154,7 @@ public class SidebarPanel extends JPanel {
             else if (LocationCategory.HALLWAY == loc.getCategory()) continue;
             else if (LocationCategory.STAIRS == loc.getCategory()) continue; 
             else if (LocationCategory.ENTRANCE == loc.getCategory()) continue; 
+            else if (loc.getFloor() != 0) continue;
             startCombo.addItem(loc);
             endCombo.addItem(loc);
         }
@@ -181,6 +182,8 @@ public class SidebarPanel extends JPanel {
             else if (LocationCategory.HALLWAY == loc.getCategory()) continue;
             else if (LocationCategory.STAIRS == loc.getCategory()) continue; 
             else if (LocationCategory.ENTRANCE == loc.getCategory()) continue; 
+            else if (loc.getFloor() != 0) continue;
+            
             if (loc.getName().toLowerCase().contains(keyword) || 
                 (loc.getBuilding() != null && loc.getBuilding().toLowerCase().contains(keyword))) {
                 searchListModel.addElement(loc);
@@ -214,11 +217,10 @@ public class SidebarPanel extends JPanel {
                 AStarService aStarService = new AStarService();
                 List<Location> path = aStarService.findShortestPath(graph, start.getId(), end.getId());
 
-                // 경로가 계산되면 지도 패널에 바로 전달해 렌더링한다.
-                mainFrame.getMapPanel().setPath(path);
+                // 경로가 계산되면 지도 패널에 바로 전달해 렌더링
+                // mainFrame.getMapPanel().setPath(path);
+                mainFrame.setPathToAllPanels(path);
 
-                // 경로가 화면 밖에 있더라도 보이도록 출발지 기준으로 살짝 이동시킨다.
-                mainFrame.getMapPanel().panTo(start.getX(), start.getY());
 
                 JOptionPane.showMessageDialog(this, "경로를 찾았습니다. 노드 수: " + path.size());
             } catch (EmptyPathException ex) {
@@ -227,4 +229,13 @@ public class SidebarPanel extends JPanel {
             }
         }
     }
+
+    public JComboBox<Location> getStartCombo() {
+        return this.startCombo;
+    }
+
+    public JComboBox<Location> getEndCombo() {
+        return this.endCombo;
+    }
+
 }

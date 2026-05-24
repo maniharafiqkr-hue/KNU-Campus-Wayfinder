@@ -3,6 +3,10 @@ package org.knu.wayfinder.view;
 import java.awt.*;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.util.ArrayList;
+import java.util.List;
 import javax.swing.*;
 import org.knu.wayfinder.model.Graph;
 import org.knu.wayfinder.model.Location;
@@ -14,6 +18,7 @@ public class MainFrame extends JFrame {
     private MapPanel mapPanel;
     private JScrollPane detailScrollPane;
 
+    private List<FloorDetailPanel> openFloorPanels = new ArrayList<>();
     
 
     public MainFrame(Graph graph) {
@@ -55,7 +60,6 @@ public class MainFrame extends JFrame {
                 boolean shouldShow = getWidth() >= threshold || getExtendedState() == JFrame.MAXIMIZED_BOTH;
                 
                 detailScrollPane.setVisible(shouldShow);
-                
                 revalidate();
                 repaint();
             }
@@ -75,8 +79,28 @@ public class MainFrame extends JFrame {
     }
 
     public void onLocationSelectedFromMap(Location loc) {
+        if(loc.getFloor() != 0) return;
         sidebarPanel.displayLocationInfo(loc);
         detailSidebarPanel.updateLocationDetail(loc);
+    }
+
+    public void registerFloorPanel(FloorDetailPanel panel) {
+        openFloorPanels.add(panel);
+        // 창이 닫히면 리스트에서 제거
+        panel.addWindowListener(new WindowAdapter() {
+        @Override
+        public void windowClosed(WindowEvent e) {
+            openFloorPanels.remove(panel);
+            }
+        });
+    }
+
+
+    public void setPathToAllPanels(List<Location> path) {
+        mapPanel.setPath(path);
+        for (FloorDetailPanel panel : openFloorPanels) {
+            panel.getMapPanel().setPath(path);
+        }
     }
 
     
