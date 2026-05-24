@@ -19,19 +19,20 @@ public class MainApp {
         SwingUtilities.invokeLater(() -> {
             System.out.println("KNU Campus Wayfinder 시스템을 시작합니다...");
             
-            // testing
             Map<Integer, Location> locations = new HashMap<>();
             List<Edge> edges = new ArrayList<>();
             
-            locations = dataLoader.loadLocations("src/org/knu/wayfinder/data/locations.csv");
-            edges = dataLoader.loadEdges("src/org/knu/wayfinder/data/edges.csv");
+            // 파일 경로는 dataLoader에 있음
+            locations = dataLoader.loadLocationsAndChild();
+            edges = dataLoader.loadEdgesAndChild();
+            edges = dataLoader.connectEntrance(locations, edges);
             
             // System.out.println(locations);
             // System.out.println(edges);
 
             System.out.println("Loading data...");
 
-            // Initialize Graph
+            // 그래프 만들기
             System.out.println("Initializing graph...");
             Graph graph = new Graph();
             for (Location loc : locations.values()) {
