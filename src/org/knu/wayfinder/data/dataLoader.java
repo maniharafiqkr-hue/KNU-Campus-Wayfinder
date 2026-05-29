@@ -165,7 +165,8 @@ public class dataLoader {
     public static List<Edge> connectEntrance(Map<Integer, Location> locations, List<Edge> edges) {
         for(Location loc : locations.values()) {
             if(loc.getCategory() == LocationCategory.ENTRANCE && loc.getFloor() != 0) {
-                edges.add(new Edge(loc.getId(), loc.getParentBuilding().getId(), 0));
+                if(loc.getParentBuilding() != null)
+                    edges.add(new Edge(loc.getId(), loc.getParentBuilding().getId(), 0));
             }
         }
 

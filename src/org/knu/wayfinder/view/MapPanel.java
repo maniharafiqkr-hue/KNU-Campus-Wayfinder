@@ -7,6 +7,7 @@ import java.awt.geom.NoninvertibleTransformException;
 import java.awt.geom.Path2D;
 import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -28,6 +29,7 @@ public class MapPanel extends JPanel {
     private JPopupMenu popupMenu;
     private JMenuItem setStartItem;
     private JMenuItem setEndItem;
+    private JMenuItem addRouteItem;
 
     private double zoomFactor = 1.0;
     private double prevZoomFactor = 1.0;
@@ -39,6 +41,11 @@ public class MapPanel extends JPanel {
     private int xDiff;
     private int yDiff;
     private Point startPoint;
+
+    private static final Color[] ROUTE_COLORS = {
+        Color.RED, Color.ORANGE, Color.GREEN,  
+        Color.CYAN, Color.BLUE, Color.MAGENTA, Color.BLACK
+    };
 
     // FloorDetailPanel용
     private Location parentLocation = null; 
@@ -62,8 +69,11 @@ public class MapPanel extends JPanel {
         popupMenu = new JPopupMenu();
         setStartItem = new JMenuItem("출발지로 설정");
         setEndItem = new JMenuItem("도착지로 설정");
+        addRouteItem = new JMenuItem("경유지로 추가");
+
         popupMenu.add(setStartItem);
         popupMenu.add(setEndItem);
+        popupMenu.add(addRouteItem);
 
         
         // DefaultComboBoxModel에 getIndexOf 있음
@@ -84,6 +94,9 @@ public class MapPanel extends JPanel {
                 endCombo.addItem(RClickedLocation);
             }
             if (RClickedLocation != null) endCombo.setSelectedItem(RClickedLocation);
+        });
+        addRouteItem.addActionListener(e -> {
+            mainFrame.getSidebarPanel().addMultipleLocList(RClickedLocation);
         });
 
         MapMouseAdapter adapter = new MapMouseAdapter();
@@ -112,8 +125,10 @@ public class MapPanel extends JPanel {
         popupMenu = new JPopupMenu();
         setStartItem = new JMenuItem("출발지로 설정");
         setEndItem = new JMenuItem("도착지로 설정");
+        addRouteItem = new JMenuItem("경유지로 추가");
         popupMenu.add(setStartItem);
         popupMenu.add(setEndItem);
+        popupMenu.add(addRouteItem);
 
         
         // DefaultComboBoxModel에 getIndexOf 있음
@@ -135,6 +150,9 @@ public class MapPanel extends JPanel {
                 endCombo.addItem(RClickedLocation);
             }
             if (RClickedLocation != null) endCombo.setSelectedItem(RClickedLocation);
+        });
+        addRouteItem.addActionListener(e -> {
+            mainFrame.getSidebarPanel().addMultipleLocList(RClickedLocation);
         });
         
 
@@ -160,7 +178,7 @@ public class MapPanel extends JPanel {
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
 
-        Graphics2D g2 = (Graphics2D) g;
+        Graphics2D g2 = (Graphics2D) g.create();
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
         // 마우스 휠로 확대/축소
@@ -223,7 +241,7 @@ public class MapPanel extends JPanel {
 
         // 루트 그리기
         if (!currentPath.isEmpty()) {
-            g2.setColor(new Color(100, 150, 255, 180));
+            // g2.setColor(new Color(100, 150, 255, 180));
             g2.setStroke(new BasicStroke(5.0f / (float)zoomFactor, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
             mainFrame.setPathToAllPanels(currentPath);
             drawPath(g2, currentPath);
@@ -273,34 +291,82 @@ public class MapPanel extends JPanel {
     }
 
     private void drawPath(Graphics2D g2, List<Location> path) {
-        if (path.size() < 2) {
-            return;
+        if (path.size() < 2) return;
+
+        List<Location> routesList = mainFrame.getSidebarPanel().getRoutesList();
+
+        List<Integer> boundaryIndices = new ArrayList<>();
+        boundaryIndices.add(0); // 시작점
+
+        // 구간 따기
+        if(routesList == null) return;
+
+        for (Location waypoint : routesList) {
+            for (int i = 1; i < path.size() - 1; i++) {
+                if (path.get(i).getId() == waypoint.getId() && boundaryIndices.getLast() < i) {
+                    boundaryIndices.add(i);
+                    break;
+                }
+            }
         }
+        boundaryIndices.add(path.size() - 1);
+        System.out.println(boundaryIndices);
+
+        int from, to;
+        for (int seg = 0; seg < boundaryIndices.size() - 1; seg++) {
+            from = boundaryIndices.get(seg);
+            to = boundaryIndices.get(seg + 1);
+
+            g2.setColor(ROUTE_COLORS[seg % ROUTE_COLORS.length]);
+            g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.5f));
+            
+
+            Path2D.Double route = new Path2D.Double();
+            boolean started = false;
+
+            for (int i = from; i <= to; i++) {
+                Location loc = path.get(i);
+                if (loc.getFloor() != currentFloor || loc.getParentBuilding() != parentLocation) continue;
+
+                if (!started) {
+                    route.moveTo(loc.getX(), loc.getY());
+                    started = true;
+                } else {
+                    route.lineTo(loc.getX(), loc.getY());
+                }
+            }
+
+            g2.draw(route);
+            g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f));
+        }
+
+        int nowIndex = mainFrame.getSidebarPanel().getNowRouteIndex();
+        if(nowIndex == 0 || boundaryIndices.size()-1 < nowIndex) return;
+
+        from = boundaryIndices.get(nowIndex-1);
+        to = boundaryIndices.get(nowIndex);
+        g2.setColor(Color.RED);
 
         Path2D.Double route = new Path2D.Double();
-        Location first = null;
-        for(int i=0; i<path.size(); i++) {
-            Location location = path.get(i);
-            if(location.getFloor() != currentFloor || location.getParentBuilding() != parentLocation) continue;
+        boolean started = false;
+        for (int i = from; i <= to; i++) {
+            Location loc = path.get(i);
+            if (loc.getFloor() != currentFloor || loc.getParentBuilding() != parentLocation) continue;
 
-            if(first == null){
-                first = location;
-                route.moveTo(first.getX(), first.getY());
+            if (!started) {
+                route.moveTo(loc.getX(), loc.getY());
+                started = true;
+            } else {
+                route.lineTo(loc.getX(), loc.getY());
             }
-            else{
-                route.lineTo(location.getX(), location.getY());
-            } 
         }
 
-        // Location first = path.get(0);
-        // route.moveTo(first.getX(), first.getY());
-
-        // for (int i = 1; i < path.size(); i++) {
-        //     Location location = path.get(i);
-        //     route.lineTo(location.getX(), location.getY());
-        // }
-
         g2.draw(route);
+
+    }
+
+    public List<Location> getCurrentPath(){
+        return this.currentPath;
     }
 
     private class MapMouseAdapter extends MouseAdapter {

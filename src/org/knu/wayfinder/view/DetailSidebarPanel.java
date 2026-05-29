@@ -105,7 +105,7 @@ public class DetailSidebarPanel extends JPanel {
                 int currentFloor = floor;
                 button.addActionListener(e -> {
                     FloorDetailPanel dialog = new FloorDetailPanel(mainFrame, graph, loc, currentFloor);
-                    dialog.setVisible(true); // 새 창 열기 (모달 상태이므로 닫기 전까지 대기)
+                    dialog.setVisible(true);
                     // updateFloorDetail(loc, currentFloor);
                 });
 
