@@ -289,9 +289,15 @@ public class SidebarPanel extends JPanel {
 
         JButton button;
         routesContainer.add(Box.createVerticalStrut(5));
-        for (Location loc : routesList) {
+        // for (Location loc :  routesList) {
+        for(int i=0; i<routesList.size(); i++){
+
+            // 개어려운 람다 뭐시기 때문에 final로 해야됨
+            final Location loc = routesList.get(i);
+            final int index = i;
+
             if (loc.getParentBuilding() != null) {
-                button = new JButton(loc.getParentBuilding() + " " + loc.getFloor() + "층" + " " + loc.getId());
+                button = new JButton(loc.getParentBuilding() + " " + loc.getFloor() + "층");
             } else {
                 button = new JButton(loc.getName());
             }
@@ -299,12 +305,29 @@ public class SidebarPanel extends JPanel {
             button.setBackground(Color.white);
             button.setAlignmentX(Component.LEFT_ALIGNMENT);
             button.addActionListener(e -> {
+                for(FloorDetailPanel panel : mainFrame.getOpenFloorPanels())
+                    panel.dispose();
+
                 if (loc.getParentBuilding() != null) {
                     FloorDetailPanel dialog = new FloorDetailPanel(mainFrame, graph, loc.getParentBuilding(), loc.getFloor());
                     dialog.setVisible(true);
                 } else {
                     mainFrame.getMapPanel().panTo(loc.getX(), loc.getY());
                 }
+
+                nowRouteIndex = index;
+
+                int counter = 0;
+                for(Component com : routesContainer.getComponents()) {
+                    if(com instanceof JButton) {
+                        if(counter == nowRouteIndex) com.setBackground(Color.CYAN);
+                        else com.setBackground(Color.WHITE);
+                        counter++;
+                    }
+                }
+
+                nowRouteIndex = (nowRouteIndex + 1) % routesList.size();
+
             });
 
             routesContainer.add(button);
@@ -313,7 +336,6 @@ public class SidebarPanel extends JPanel {
                 routesContainer.add(new JLabel("↓"));
                 routesContainer.add(Box.createVerticalStrut(5));
             }
-            
         }
 
         routesContainer.add(Box.createVerticalGlue());

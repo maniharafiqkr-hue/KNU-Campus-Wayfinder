@@ -310,7 +310,7 @@ public class MapPanel extends JPanel {
             }
         }
         boundaryIndices.add(path.size() - 1);
-        System.out.println(boundaryIndices);
+        // System.out.println(boundaryIndices);
 
         int from, to;
         for (int seg = 0; seg < boundaryIndices.size() - 1; seg++) {
