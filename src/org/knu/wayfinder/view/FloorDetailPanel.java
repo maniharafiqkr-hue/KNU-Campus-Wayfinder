@@ -67,6 +67,8 @@ public class FloorDetailPanel extends JDialog {
                 JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
                 JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         buttonScroll.setBorder(null);
+        buttonScroll.getVerticalScrollBar().setUnitIncrement(24);
+        // routesScrollPane.getVerticalScrollBar().setUnitIncrement(24);
         leftPanel.add(buttonScroll, BorderLayout.CENTER);
 
         mainPanel.add(leftPanel, BorderLayout.WEST);

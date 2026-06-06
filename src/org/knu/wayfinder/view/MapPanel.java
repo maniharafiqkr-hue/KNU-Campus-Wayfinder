@@ -301,7 +301,7 @@ public class MapPanel extends JPanel {
         // 구간 따기
         if(routesList == null) return;
 
-        for (Location waypoint : routesList) {
+        for (Location waypoint : routesList.subList(1, routesList.size())) {
             for (int i = 1; i < path.size() - 1; i++) {
                 if (path.get(i).getId() == waypoint.getId() && boundaryIndices.getLast() < i) {
                     boundaryIndices.add(i);
@@ -311,6 +311,8 @@ public class MapPanel extends JPanel {
         }
         boundaryIndices.add(path.size() - 1);
         // System.out.println(boundaryIndices);
+        // System.out.println(routesList);
+        
 
         int from, to;
         for (int seg = 0; seg < boundaryIndices.size() - 1; seg++) {
@@ -341,6 +343,7 @@ public class MapPanel extends JPanel {
         }
 
         int nowIndex = mainFrame.getSidebarPanel().getNowRouteIndex();
+        // System.out.println(nowIndex);
         if(nowIndex == 0 || boundaryIndices.size()-1 < nowIndex) return;
 
         from = boundaryIndices.get(nowIndex-1);

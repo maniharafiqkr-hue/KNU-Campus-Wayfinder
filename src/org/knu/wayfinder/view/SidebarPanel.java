@@ -444,8 +444,14 @@ public class SidebarPanel extends JPanel {
     }
 
     public void addMultipleLocList(Location loc) {
-        if(multipleLocList.contains(loc)){
-            JOptionPane.showMessageDialog(this, "이미 경유지에 있는 장소입니다.");
+        if(multipleLocList.size() != 0)
+            if(multipleLocList.getLast() == loc){
+                JOptionPane.showMessageDialog(this, "최신 경유지에 이미 있는 장소입니다.");
+                return;
+            }
+
+        if(multipleLocList.size() == 0 && startCombo.getSelectedItem() == loc){
+            JOptionPane.showMessageDialog(this, "출발지에 이미 있는 장소입니다.");
             return;
         }
 
