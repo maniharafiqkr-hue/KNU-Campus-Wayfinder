@@ -54,7 +54,7 @@ public class FloorDetailPanel extends JDialog {
                     button.setMaximumSize(new Dimension(Integer.MAX_VALUE, 35));
                     button.setAlignmentX(Component.LEFT_ALIGNMENT);
                     button.addActionListener(e -> {
-                        System.out.println(cLoc.getName() + " 클릭됨");
+                        // System.out.println(cLoc.getName() + " 클릭됨");
                         indoorMapPanel.panTo(cLoc.getX(), cLoc.getY());
                     });
                     buttonContainer.add(button);

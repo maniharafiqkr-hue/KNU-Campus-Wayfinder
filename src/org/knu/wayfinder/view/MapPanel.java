@@ -344,10 +344,15 @@ public class MapPanel extends JPanel {
 
         int nowIndex = mainFrame.getSidebarPanel().getNowRouteIndex();
         // System.out.println(nowIndex);
-        if(nowIndex == 0 || boundaryIndices.size()-1 < nowIndex) return;
+        if(boundaryIndices.size()-1 < nowIndex) return;
 
-        from = boundaryIndices.get(nowIndex-1);
-        to = boundaryIndices.get(nowIndex);
+        if(nowIndex == 0){
+            from  = boundaryIndices.get(boundaryIndices.size()-2);
+            to = boundaryIndices.getLast();
+        }else{
+            from = boundaryIndices.get(nowIndex-1);
+            to = boundaryIndices.get(nowIndex);
+        }
         g2.setColor(Color.RED);
 
         Path2D.Double route = new Path2D.Double();

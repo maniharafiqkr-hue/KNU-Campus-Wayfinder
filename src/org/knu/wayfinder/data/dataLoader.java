@@ -116,7 +116,7 @@ public class dataLoader {
                                     if(beforeFloor < floor) {
                                         maxFloor++;
                                         beforeFloor = floor;
-                                        System.out.println(maxFloor);
+                                        // System.out.println(maxFloor);
                                     }
                                     
                                     cLoc = new Location(id, category, name, floor, building, x, y, description);
