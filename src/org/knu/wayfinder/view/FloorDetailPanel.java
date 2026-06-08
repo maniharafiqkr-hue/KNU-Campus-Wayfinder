@@ -54,7 +54,7 @@ public class FloorDetailPanel extends JDialog {
                     button.setMaximumSize(new Dimension(Integer.MAX_VALUE, 35));
                     button.setAlignmentX(Component.LEFT_ALIGNMENT);
                     button.addActionListener(e -> {
-                        System.out.println(cLoc.getName() + " 클릭됨");
+                        // System.out.println(cLoc.getName() + " 클릭됨");
                         indoorMapPanel.panTo(cLoc.getX(), cLoc.getY());
                     });
                     buttonContainer.add(button);
@@ -67,6 +67,8 @@ public class FloorDetailPanel extends JDialog {
                 JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
                 JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         buttonScroll.setBorder(null);
+        buttonScroll.getVerticalScrollBar().setUnitIncrement(24);
+        // routesScrollPane.getVerticalScrollBar().setUnitIncrement(24);
         leftPanel.add(buttonScroll, BorderLayout.CENTER);
 
         mainPanel.add(leftPanel, BorderLayout.WEST);

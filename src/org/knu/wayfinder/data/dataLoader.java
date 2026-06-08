@@ -90,6 +90,8 @@ public class dataLoader {
         int beforeFloor = 0;
         int maxFloor = 0;
         for(File dir : folder.listFiles()) {
+            beforeFloor = 0;
+            maxFloor = 0;
             parant = dir.getName();
             pLoc = locations.get(Integer.parseInt(parant));
             for(File file : dir.listFiles()) {
@@ -114,6 +116,7 @@ public class dataLoader {
                                     if(beforeFloor < floor) {
                                         maxFloor++;
                                         beforeFloor = floor;
+                                        // System.out.println(maxFloor);
                                     }
                                     
                                     cLoc = new Location(id, category, name, floor, building, x, y, description);
@@ -165,7 +168,8 @@ public class dataLoader {
     public static List<Edge> connectEntrance(Map<Integer, Location> locations, List<Edge> edges) {
         for(Location loc : locations.values()) {
             if(loc.getCategory() == LocationCategory.ENTRANCE && loc.getFloor() != 0) {
-                edges.add(new Edge(loc.getId(), loc.getParentBuilding().getId(), 0));
+                if(loc.getParentBuilding() != null)
+                    edges.add(new Edge(loc.getId(), loc.getParentBuilding().getId(), 0));
             }
         }
 

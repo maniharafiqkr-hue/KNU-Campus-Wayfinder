@@ -103,5 +103,9 @@ public class MainFrame extends JFrame {
         }
     }
 
+    public List<FloorDetailPanel> getOpenFloorPanels(){
+        return openFloorPanels;
+    }
+
     
 }
